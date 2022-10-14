@@ -38,8 +38,20 @@ namespace Face_Detection_and_Recognition_Server_V2
                 Console.WriteLine();
             } while (augmentationChoice != 0 && augmentationChoice != 1 && augmentationChoice != 2 && augmentationChoice != 3);
 
+            int modelChoice;
+            Console.WriteLine("Select Model: ");
+            Console.WriteLine("0 = ResnetV250 ");
+            Console.WriteLine("1 = ResnetV2101 ");
+            Console.WriteLine("2 = InceptionV3 ");
+            Console.WriteLine("3 = MobilenetV2 ");
+            do
+            {
+                Console.Write("Enter choice: ");
+                modelChoice = int.Parse(Console.ReadKey().KeyChar.ToString());
+                Console.WriteLine();
+            } while (modelChoice != 0 && modelChoice != 1 && modelChoice != 2 && modelChoice != 3);
 
-            if (augmentationChoice == 0 || augmentationChoice == 1) ImageAugmentation.runImageAugmentation(augmentationChoice);
+            if (augmentationChoice == 0 || augmentationChoice == 1) ImageAugmentation.runImageAugmentation(augmentationChoice, modelChoice);
 
             MLContext mlContext = new MLContext();
 
@@ -88,19 +100,6 @@ namespace Face_Detection_and_Recognition_Server_V2
             watch.Stop();
             elapsedMs = watch.ElapsedMilliseconds;
             Console.WriteLine("Splitting Dataset took: " + (elapsedMs / 1000).ToString() + " seconds");
-            
-            int modelChoice;
-            Console.WriteLine("Select Model: ");
-            Console.WriteLine("0 = ResnetV250 ");
-            Console.WriteLine("1 = ResnetV2101 ");
-            Console.WriteLine("2 = InceptionV3 ");
-            Console.WriteLine("3 = MobilenetV2 ");
-            do
-            {
-                Console.Write("Enter choice: ");
-                modelChoice = int.Parse(Console.ReadKey().KeyChar.ToString());
-                Console.WriteLine();
-            } while (modelChoice != 0 && modelChoice != 1 && modelChoice != 2 && modelChoice != 3);
 
             watch = System.Diagnostics.Stopwatch.StartNew();
             AdditionalMethods.ConsoleWriteHeader("*** Training " + AdditionalMethods.nameOfTrainedModel(modelChoice, augmentationChoice) + " model ***");

@@ -24,7 +24,7 @@ namespace Face_Detection_and_Recognition_Server_V2.Helper_Classes
     {
         static int count = 0;
 
-        public static void runImageAugmentation(int augmentationChoice)
+        public static void runImageAugmentation(int augmentationChoice, int modelChoice)
         {
             var watch = System.Diagnostics.Stopwatch.StartNew();
             AdditionalMethods.ConsoleWriteHeader("*** Image Augmentation ***");
@@ -38,7 +38,12 @@ namespace Face_Detection_and_Recognition_Server_V2.Helper_Classes
                 foreach (FileInfo file in files)
                 {
                     Bitmap image = new Bitmap(directory + "\\" + file.Name);
+
+                    if(modelChoice == 2) Cv2.Resize(image.ToMat(), image.ToMat(), new Size(299, 299));
+                    else Cv2.Resize(image.ToMat(), image.ToMat(), new Size(244, 244));
+
                     image = sharpenImage(image);
+
                     if (augmentationChoice == 1)
                     {
                         image = toGrayscale(image);
