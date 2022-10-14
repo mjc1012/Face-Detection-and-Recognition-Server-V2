@@ -1,6 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Drawing;
+using OpenCvSharp;
+using OpenCvSharp.Extensions;
+using AForge.Imaging.Filters;
+using AForge.Imaging.ColorReduction;
+using System.IO;
+using AForge.Math.Random;
+using Point = OpenCvSharp.Point;
 using Microsoft.ML;
 using Microsoft.ML.Transforms;
 using Microsoft.ML.Data;
