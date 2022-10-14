@@ -31,7 +31,7 @@ namespace Face_Detection_and_Recognition_Server_V2.Helper_Classes
             }
             else if (modelChoice == 3 && (augmentationChoice == 0 || augmentationChoice == 2))
             {
-                return "MobilenetVColored2";
+                return "MobilenetV2Colored";
             }
             else if (modelChoice == 0 && (augmentationChoice == 1 || augmentationChoice == 3))
             {
