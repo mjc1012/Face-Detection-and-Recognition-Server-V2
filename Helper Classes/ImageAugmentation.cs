@@ -66,7 +66,7 @@ namespace Face_Detection_and_Recognition_Server_V2.Helper_Classes
                             var randomNumbers = (augmentationChoice == 1)? Enumerable.Range(0, 4).OrderBy(x => random.Next()).Take(4).ToList() : Enumerable.Range(0, 5).OrderBy(x => random.Next()).Take(5).ToList();
                             for (int i = 0; i < ((augmentationChoice == 1) ? 4 : 5); i++)
                             {
-                                ImageAugmentation.saveImage(imageVariations2[i], directory.Name, augmentationChoice);
+                                ImageAugmentation.saveImage(imageVariations2[i], directory.Name, augmentationChoice, modelChoice);
                                 Bitmap imageVariations3 = imageVariations2[i];
                                 switch (randomNumbers[i])
                                 {
@@ -86,7 +86,7 @@ namespace Face_Detection_and_Recognition_Server_V2.Helper_Classes
                                         imageVariations3 = saltAndPepper(imageVariations2[i]);
                                         break;
                                 }
-                                ImageAugmentation.saveImage(imageVariations3, directory.Name, augmentationChoice);
+                                ImageAugmentation.saveImage(imageVariations3, directory.Name, augmentationChoice, modelChoice);
                             }
                         }
                     }
@@ -257,20 +257,37 @@ namespace Face_Detection_and_Recognition_Server_V2.Helper_Classes
             return image;
         }
 
-        public static void saveImage(Bitmap image, string filename, int augmentationChoice)
+        public static void saveImage(Bitmap image, string filename, int augmentationChoice, int modelChoice)
         {
 
             Cv2.Resize(image.ToMat(), image.ToMat(), new Size(224, 224));
 
             if (augmentationChoice == 1)
             {
-                if (!Directory.Exists(Config.augmentedDataDirectoryGrayscale + filename)) Directory.CreateDirectory(Config.augmentedDataDirectoryGrayscale + filename);
-                image.Save(Config.augmentedDataDirectoryGrayscale + filename + "\\" + count++ + ".jpg", ImageFormat.Jpeg);
+                if(modelChoice == 2)
+                {
+                    if (!Directory.Exists(Config.augmentedDataInceptionDirectoryGrayscale + filename)) Directory.CreateDirectory(Config.augmentedDataInceptionDirectoryGrayscale + filename);
+                    image.Save(Config.augmentedDataInceptionDirectoryGrayscale + filename + "\\" + count++ + ".jpg", ImageFormat.Jpeg);
+                }
+                else
+                {
+                    if (!Directory.Exists(Config.augmentedDataDirectoryGrayscale + filename)) Directory.CreateDirectory(Config.augmentedDataDirectoryGrayscale + filename);
+                    image.Save(Config.augmentedDataDirectoryGrayscale + filename + "\\" + count++ + ".jpg", ImageFormat.Jpeg);
+                }
             }
             else
             {
-                if (!Directory.Exists(Config.augmentedDataDirectory + filename)) Directory.CreateDirectory(Config.augmentedDataDirectory + filename);
-                image.Save(Config.augmentedDataDirectory + filename + "\\" + count++ + ".jpg", ImageFormat.Jpeg);
+                if (modelChoice == 2)
+                {
+                    if (!Directory.Exists(Config.augmentedDataInceptionDirectory + filename)) Directory.CreateDirectory(Config.augmentedDataInceptionDirectory + filename);
+                    image.Save(Config.augmentedDataInceptionDirectory + filename + "\\" + count++ + ".jpg", ImageFormat.Jpeg);
+                }
+                else
+                {
+
+                    if (!Directory.Exists(Config.augmentedDataDirectory + filename)) Directory.CreateDirectory(Config.augmentedDataDirectory + filename);
+                    image.Save(Config.augmentedDataDirectory + filename + "\\" + count++ + ".jpg", ImageFormat.Jpeg);
+                }
             }
         }
     }

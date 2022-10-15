@@ -59,8 +59,18 @@ namespace Face_Detection_and_Recognition_Server_V2
             AdditionalMethods.ConsoleWriteHeader("*** Load Dataset ***");
 
             IEnumerable<ImageData> images = null;
-            if (augmentationChoice == 0 || augmentationChoice == 2) images = AdditionalMethods.LoadImagesFromDirectory(folder: Config.augmentedDataDirectory, useFolderNameasLabel: true);
-            else if (augmentationChoice == 1 || augmentationChoice == 3) images = AdditionalMethods.LoadImagesFromDirectory(folder: Config.augmentedDataDirectoryGrayscale, useFolderNameasLabel: true);
+
+            if(modelChoice == 2)
+            {
+                if (augmentationChoice == 0 || augmentationChoice == 2) images = AdditionalMethods.LoadImagesFromDirectory(folder: Config.augmentedDataInceptionDirectory, useFolderNameasLabel: true);
+                else if (augmentationChoice == 1 || augmentationChoice == 3) images = AdditionalMethods.LoadImagesFromDirectory(folder: Config.augmentedDataInceptionDirectoryGrayscale, useFolderNameasLabel: true);
+            }
+            else
+            {
+                if (augmentationChoice == 0 || augmentationChoice == 2) images = AdditionalMethods.LoadImagesFromDirectory(folder: Config.augmentedDataDirectory, useFolderNameasLabel: true);
+                else if (augmentationChoice == 1 || augmentationChoice == 3) images = AdditionalMethods.LoadImagesFromDirectory(folder: Config.augmentedDataDirectoryGrayscale, useFolderNameasLabel: true);
+            }
+            
 
             IDataView imageData = mlContext.Data.LoadFromEnumerable(images);
 
@@ -70,12 +80,24 @@ namespace Face_Detection_and_Recognition_Server_V2
             long elapsedMs = watch.ElapsedMilliseconds;
             Console.WriteLine("Loading Dataset took: " + (elapsedMs / 1000).ToString() + " seconds");
 
+            string imageFolderPath = "";
+            if (modelChoice == 2)
+            {
+                if (augmentationChoice == 0 || augmentationChoice == 2) imageFolderPath = Config.augmentedDataInceptionDirectory;
+                else if (augmentationChoice == 1 || augmentationChoice == 3) imageFolderPath = Config.augmentedDataInceptionDirectoryGrayscale;
+            }
+            else
+            {
+                if (augmentationChoice == 0 || augmentationChoice == 2) imageFolderPath =Config.augmentedDataDirectory;
+                else if (augmentationChoice == 1 || augmentationChoice == 3) imageFolderPath =Config.augmentedDataDirectoryGrayscale;
+            }
+            
             var preprocessingPipeline = mlContext.Transforms.Conversion.MapValueToKey(
                                                                         inputColumnName: "Label",
                                                                         outputColumnName: "LabelAsKey")
                                         .Append(mlContext.Transforms.LoadRawImageBytes(
                                                                         outputColumnName: "Image",
-                                                                        imageFolder: (augmentationChoice == 0 || augmentationChoice == 2)? Config.augmentedDataDirectory : Config.augmentedDataDirectoryGrayscale,
+                                                                        imageFolder: imageFolderPath,
                                                                         inputColumnName: "ImagePath"));
 
             watch = System.Diagnostics.Stopwatch.StartNew();
