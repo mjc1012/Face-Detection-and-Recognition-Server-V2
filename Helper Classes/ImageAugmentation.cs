@@ -39,9 +39,6 @@ namespace Face_Detection_and_Recognition_Server_V2.Helper_Classes
                 {
                     Bitmap image = new Bitmap(directory + "\\" + file.Name);
 
-                    if(modelChoice == 2) Cv2.Resize(image.ToMat(), image.ToMat(), new Size(299, 299));
-                    else Cv2.Resize(image.ToMat(), image.ToMat(), new Size(244, 244));
-
                     image = sharpenImage(image);
 
                     if (augmentationChoice == 1)
@@ -260,19 +257,21 @@ namespace Face_Detection_and_Recognition_Server_V2.Helper_Classes
         public static void saveImage(Bitmap image, string filename, int augmentationChoice, int modelChoice)
         {
 
-            Cv2.Resize(image.ToMat(), image.ToMat(), new Size(224, 224));
+            Mat newImage = new Mat();
+            if (modelChoice == 2) Cv2.Resize(image.ToMat(), newImage, new Size(299, 299));
+            else Cv2.Resize(image.ToMat(), newImage, new Size(244, 244));
 
             if (augmentationChoice == 1)
             {
                 if(modelChoice == 2)
                 {
                     if (!Directory.Exists(Config.augmentedDataInceptionDirectoryGrayscale + filename)) Directory.CreateDirectory(Config.augmentedDataInceptionDirectoryGrayscale + filename);
-                    image.Save(Config.augmentedDataInceptionDirectoryGrayscale + filename + "\\" + count++ + ".jpg", ImageFormat.Jpeg);
+                    newImage.SaveImage(Config.augmentedDataInceptionDirectoryGrayscale + filename + "\\" + count++ + ".jpg");
                 }
                 else
                 {
                     if (!Directory.Exists(Config.augmentedDataDirectoryGrayscale + filename)) Directory.CreateDirectory(Config.augmentedDataDirectoryGrayscale + filename);
-                    image.Save(Config.augmentedDataDirectoryGrayscale + filename + "\\" + count++ + ".jpg", ImageFormat.Jpeg);
+                    newImage.SaveImage(Config.augmentedDataDirectoryGrayscale + filename + "\\" + count++ + ".jpg");
                 }
             }
             else
@@ -280,13 +279,13 @@ namespace Face_Detection_and_Recognition_Server_V2.Helper_Classes
                 if (modelChoice == 2)
                 {
                     if (!Directory.Exists(Config.augmentedDataInceptionDirectory + filename)) Directory.CreateDirectory(Config.augmentedDataInceptionDirectory + filename);
-                    image.Save(Config.augmentedDataInceptionDirectory + filename + "\\" + count++ + ".jpg", ImageFormat.Jpeg);
+                    newImage.SaveImage(Config.augmentedDataInceptionDirectory + filename + "\\" + count++ + ".jpg");
                 }
                 else
                 {
 
                     if (!Directory.Exists(Config.augmentedDataDirectory + filename)) Directory.CreateDirectory(Config.augmentedDataDirectory + filename);
-                    image.Save(Config.augmentedDataDirectory + filename + "\\" + count++ + ".jpg", ImageFormat.Jpeg);
+                    newImage.SaveImage(Config.augmentedDataDirectory + filename + "\\" + count++ + ".jpg");
                 }
             }
         }
